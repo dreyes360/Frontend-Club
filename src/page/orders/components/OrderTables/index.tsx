@@ -16,7 +16,7 @@ interface Props {
 export default function OrderTables({ pendingOrders }: Props) {
   // const orderInProcess = []
   // const result  = [ pendingOrders.reduce((acc, item) => {
-
+  //   if(!acc.has(item.id)) 
   // }, new Map)]
   console.log(pendingOrders);
   return (
