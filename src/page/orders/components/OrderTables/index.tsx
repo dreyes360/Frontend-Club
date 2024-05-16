@@ -18,7 +18,7 @@ export default function OrderTables({ pendingOrders }: Props) {
   // const result  = [ pendingOrders.reduce((acc, item) => {
   //   if(!acc.has(item.id)) 
   // }, new Map)]
-  console.log(pendingOrders);
+  
   return (
     <Table className="mb-20 border border-black">
       <TableHeader >
