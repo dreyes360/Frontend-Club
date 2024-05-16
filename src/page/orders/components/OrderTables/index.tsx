@@ -15,11 +15,9 @@ interface Props {
 
 export default function OrderTables({ pendingOrders }: Props) {
   // const orderInProcess = []
-  // const orders = pendingOrders.map((x) => {
-  //   if(orderInProcess.some((val) => { return val[x.category_id] === x[d] }))
-  // });
+  // const result  = [ pendingOrders.reduce((acc, item) => {
 
-  // console.log(orders);
+  // }, new Map)]
   console.log(pendingOrders);
   return (
     <Table className="mb-20 border border-black">
