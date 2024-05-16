@@ -19,7 +19,7 @@ export default function CardProduct({id, name, price, edit, addOrder, editingPro
           value={price}
           disabled={!edit || !cardById}
           className={`${
-            cardById ?  (edit ? "shadow-xl h-[3.5rem]" : "text-black") : ""
+            cardById ?  (edit ? "shadow-xl h-[3.8rem]" : "text-black") : ""
           } transition-all duration-500 relative text-center`}
           />
       </CardContent>

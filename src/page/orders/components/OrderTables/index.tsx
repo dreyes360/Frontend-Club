@@ -20,29 +20,27 @@ export default function OrderTables({ pendingOrders }: Props) {
   // });
 
   // console.log(orders);
-console.log(pendingOrders)
+  console.log(pendingOrders);
   return (
-    <div className="max-h-[10rem]">
-      <Table className="mb-20 border border-black">
-      <TableHeader>
-        <TableRow>
+    <Table className="mb-20 border border-black">
+      <TableHeader >
+        <TableRow >
           <TableHead>Cantidad</TableHead>
           <TableHead>Descripcion</TableHead>
           <TableHead>Precio</TableHead>
         </TableRow>
       </TableHeader>
 
-      <TableBody className="">
+      <TableBody>
         {pendingOrders.map((order) => (
           <TableRow key={order.id}>
-              <TableCell></TableCell>
-              <TableCell></TableCell>
-              <TableCell></TableCell>
+            <TableCell></TableCell>
+            <TableCell></TableCell>
+            <TableCell></TableCell>
           </TableRow>
         ))}
       </TableBody>
       <TableFooter></TableFooter>
     </Table>
-    </div>
   );
 }
