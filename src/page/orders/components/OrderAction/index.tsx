@@ -3,22 +3,27 @@ import { FormEvent, useState } from "react";
 import { Button } from "@/components/ui/Button";
 import { Check, Pencil } from "lucide-react";
 import { Card } from "@/components/ui/Card";
+import { Input } from "@/components/ui/Input";
 
 interface Props {
   product: Product[];
-  pendingOrders:Product[]
+  pendingOrders: Product[];
   isLoading: boolean;
+  searchValue: string;
   setPendingOrders: (value: Product[]) => void;
+  setSearchValue: (value: string) => void;
 }
 
-export default function OrderAction({ product, setPendingOrders, pendingOrders }: Props) {
+export default function OrderAction({
+  product,
+  setPendingOrders,
+  pendingOrders,
+  searchValue,
+  setSearchValue,
+}: Props) {
   const [edit, setEdit] = useState(false);
   //const [editedPrice, setEditedPrice] = useState<string | undefined>(undefined);
   const [editingProductId, setEditingProductId] = useState<number | null>(null);
-
-  const onSubmit = async (event: FormEvent) => {
-    event.preventDefault();
-  };
 
   const toggleEdit = (productId: number) => {
     //const price = product.find((product) => product.id === productId)?.price;
@@ -28,20 +33,19 @@ export default function OrderAction({ product, setPendingOrders, pendingOrders }
   };
 
   const addOrder = (productId: number) => {
-    const newProducts = [...product]
-    const orderInProcess = newProducts.find((product) => product.id === productId) as Product;
+    const newProducts = [...product];
+    const orderInProcess = newProducts.find(
+      (product) => product.id === productId
+    ) as Product;
     setPendingOrders([...pendingOrders, orderInProcess]);
-  }
-  
+  };
+
   return (
-    <form
-      id="update-orders-form"
-      onSubmit={onSubmit}
-      className="space-y-5 w-[95%]"
-    >
-      <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-y-12 gap-x-4 2xl:w-[80%] mx-auto p-2">
+    <div className="space-y-14">
+      {/* Search  Input */}
+      <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-y-12 gap-x-4 2xl:w-[95%] mx-auto p-2">
         {product.map((product) => {
-          const cardById = product.id == editingProductId
+          const cardById = product.id == editingProductId;
           return (
             <Card
               key={product.id}
@@ -50,8 +54,8 @@ export default function OrderAction({ product, setPendingOrders, pendingOrders }
               <CardProduct
                 {...product}
                 editingProductId={editingProductId}
-                edit= {edit}
-                addOrder= {addOrder}
+                edit={edit}
+                addOrder={addOrder}
               />
               {edit && cardById ? (
                 <Button
@@ -74,6 +78,6 @@ export default function OrderAction({ product, setPendingOrders, pendingOrders }
           );
         })}
       </div>
-    </form>
+    </div>
   );
 }

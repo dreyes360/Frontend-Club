@@ -13,10 +13,8 @@ interface Props {
 }
 
 export default function OrderTables({ pendingOrders }: Props) {
-
-
   // id 1 tiene 2, id 2 tiene 2, id 3 tiene 1
-   
+
   // export const pendingOrders = [
   //   {
   //     id: 1,
