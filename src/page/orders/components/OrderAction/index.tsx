@@ -45,7 +45,7 @@ export default function OrderAction({
       {/* Search  Input */}
       <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-y-12 gap-x-4 2xl:w-[95%] mx-auto p-2">
         {product.map((product) => {
-          const cardById = product.id == editingProductId;
+          const cardById = product.id === editingProductId;
           return (
             <Card
               key={product.id}
