@@ -7,7 +7,7 @@ import OrderTables from '../components/OrderTables';
 export default function Orders() {
   const { data, isLoading } = useQuery("products", getProducts);
   const [pendindgOrders, setPendingOrders] = useState<Product[] | []>([]);
-  
+  console.log(data)
   return (
     <section className="flex flex-col gap-8 w-full">
       <h3 className="text-3xl">Pedido</h3>
