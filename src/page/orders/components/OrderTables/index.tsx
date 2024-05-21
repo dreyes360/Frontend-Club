@@ -9,7 +9,7 @@ import {
 } from "@/components/ui/Table";
 
 interface Props {
-  pendingOrders: Product[];
+  pendingOrders: Order[];
 }
 
 export default function OrderTables({ pendingOrders }: Props) {
@@ -90,9 +90,9 @@ export default function OrderTables({ pendingOrders }: Props) {
       <TableBody>
         {pendingOrders.map((order) => (
           <TableRow key={order.id}>
-            <TableCell></TableCell>
-            <TableCell></TableCell>
-            <TableCell></TableCell>
+            <TableCell>{order.count}</TableCell>
+            <TableCell>{order.name}</TableCell>
+            <TableCell>{order.price}</TableCell>
           </TableRow>
         ))}
       </TableBody>
