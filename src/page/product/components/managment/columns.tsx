@@ -1,39 +1,12 @@
 import { ColumnDef } from "@tanstack/react-table";
-import { Checkbox } from "@/components/ui/Checkbox";
 import { Button } from "@/components/ui/Button";
 import { ArrowUpDown } from "lucide-react";
 import { Badge } from "@/components/ui/Badge";
 import { Sheet, SheetTrigger } from "@/components/ui/Sheet";
 import ProductDetails from "../ProductDetails";
-import { useEffect, useState } from "react";
-import { getCategories } from "@/store/slices/category/thunk";
-import { RootState, useAppDispatch } from "@/store/store";
-import { useSelector } from "react-redux";
+import { useState } from "react";
 
 export const columns: ColumnDef<Product>[] = [
-  {
-    id: "select",
-    header: ({ table }) => (
-      <Checkbox
-        className="ml-4"
-        checked={
-          table.getIsAllPageRowsSelected() ||
-          (table.getIsSomePageRowsSelected() && "indeterminate")
-        }
-        onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
-        aria-label="Select all"
-      />
-    ),
-    cell: ({ row }) => (
-      <Checkbox
-        checked={row.getIsSelected()}
-        onCheckedChange={(value) => row.toggleSelected(!!value)}
-        aria-label="Select row"
-      />
-    ),
-    enableSorting: false,
-    enableHiding: false,
-  },
   {
     accessorKey: "name",
     header: ({ column }) => {
@@ -65,7 +38,7 @@ export const columns: ColumnDef<Product>[] = [
     cell: ({ row }) => <div>{row.getValue("price")}</div>,
   },
   {
-    accessorKey: "category_id",
+    accessorKey: "category_name",
     header: ({ column }) => {
       return (
         <Button
@@ -78,23 +51,11 @@ export const columns: ColumnDef<Product>[] = [
       );
     },
     cell: ({ row }) => {
-      // eslint-disable-next-line react-hooks/rules-of-hooks
-      const category = useSelector((state:RootState) => state.categories.category)
-      // eslint-disable-next-line react-hooks/rules-of-hooks
-      const dispatch = useAppDispatch();
-      // eslint-disable-next-line react-hooks/rules-of-hooks
-      useEffect(() => {
-        dispatch(getCategories());
-      },[]);
-
-      const data = category.map((category) => (category.name))
-      data.splice(0,0,"")
-      const category_id = row.getValue("category_id") as number;
-      return <div>{data[category_id]}</div>;
+      return <div>{row.getValue("category_name")}</div>;
     },
   },
   {
-    accessorKey: "unit_id",
+    accessorKey: "unit_name",
     header: ({ column }) => {
       return (
         <Button
@@ -106,12 +67,8 @@ export const columns: ColumnDef<Product>[] = [
         </Button>
       );
     },
-    cell: ({ row }) => {
-      // eslint-disable-next-line react-hooks/rules-of-hooks
-      const unit = useSelector((state:RootState) => state.units.unit)
-      const units = unit.map((unit) => unit.abbreviation)
-      const unit_id = row.getValue("unit_id") as number;
-      return <div>{units[unit_id]}</div>;
+    cell: ({ row }) => { 
+      return <div>{row.getValue("unit_name")}</div>;
     },
   },
   {

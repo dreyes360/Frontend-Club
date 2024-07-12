@@ -1,7 +1,12 @@
 import ProtectedRoute from "@/components/ProtectedRoute";
+import RouteNotFound from "@/components/RouteNotFound";
 import AppLayout from "@/layout/AppLayout";
 import Attendance from "@/page/attendance/page/Attendance";
+import OrderHandling from "@/page/barman/page/OrderHandling";
+import OrdersProcessed from "@/page/barman/page/OrdersProcessed";
 import Boxes from "@/page/box/page/Boxes";
+import OpeningBoxes from "@/page/box/page/OpeningBox";
+import MethodsPayments from "@/page/method_payments/page/MethodsPayments";
 import Categories from "@/page/category/page/Categories";
 import Customers from "@/page/customer/page/Customers";
 import Dashboard from "@/page/home/Dashboard";
@@ -10,6 +15,8 @@ import Products from "@/page/product/page/Products";
 import Roles from "@/page/role/page/Roles";
 import Units from "@/page/unit_measure/page/Units";
 import Users from "@/page/user/page/Users";
+import OrdersOfUser from "@/page/orders/page/OrdersOfUser";
+import ReportHostess from "@/page/reports/hostess/page/ReportHostess";
 
 const appRouter = [
   {
@@ -49,17 +56,45 @@ const appRouter = [
         element: <Units />,
       },
       {
-        path: '/asistencia',
-        element: <Attendance/>
+        path: "/metodos-de-pago",
+        element: <MethodsPayments />,
       },
       {
-        path: '/caja',
-        element: <Boxes/>
+        path: "/asistencia",
+        element: <Attendance />,
       },
       {
-        path: '/pedido',
-        element: <Orders/>
-      }
+        path: "/apertura-caja",
+        element: <OpeningBoxes />,
+      },
+      {
+        path: "/caja",
+        element: <Boxes />,
+      },
+      {
+        path: "/generar-pedido",
+        element: <Orders />,
+      },
+      {
+        path: "/lista-de-pedidos",
+        element: <OrdersOfUser/>
+      },
+      {
+        path: "/atencion-de-pedidos",
+        element: <OrderHandling />,
+      },
+      {
+        path: "/pedidos-atendidos",
+        element: <OrdersProcessed />,
+      },
+      {
+        path:"/reportes-de-anfitrionas",
+        element:<ReportHostess/>
+      },
+      {
+        path: "*",
+        element: <RouteNotFound/>
+      },
     ],
   },
 ];

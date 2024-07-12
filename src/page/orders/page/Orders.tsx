@@ -1,30 +1,151 @@
 import { getProducts } from "@/helpers/getProducts";
-import OrderAction from "../components/OrderAction";
 import { useQuery } from "react-query";
 import { useEffect, useState } from "react";
-import OrderTables from "../components/OrderTables";
+import {
+  OrderTables,
+  SearchHostess,
+  SearchProduct,
+  OrderAction,
+} from "../components/index";
+import { Button } from "@/components/ui/Button";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/AlertDialog";
+import api from "@/service";
+import { toast } from "@/hooks/useToast";
+import { Loader2 } from "lucide-react";
+import { useAuth } from "@/hooks/useAuth";
 
 export default function Orders() {
-  const [pendindgOrders, setPendingOrders] = useState<Product[] | []>([]);
-  const [ searchValue, setSearchValue ] = useState("");
+  const { user } = useAuth();
   const { data, isLoading } = useQuery("products", getProducts);
-  const [filteredProducts, setFilteredProducts] = useState<Product[]>([])
+  const [filteredProducts, setFilteredProducts] = useState<Product[]>([]);
+  const [formatOrder, setFormatOrder] = useState<Product[]>([]);
+  const [pendingOrders, setPendingOrders] = useState<Product[]>([]);
+  const [searchValue, setSearchValue] = useState("");
+  const [orders, setOrders] = useState<Product[]>([]);
+  const [isPending, setIsPending] = useState(false);
+  const [value, setValue] = useState(0);
 
-  const formatOrders = pendindgOrders.reduce((acc, product) => {
-    const productExist = acc.find((obj) => obj.id == product.id);
-  if(productExist){
-    productExist.count++ 
-    productExist.price = Number(productExist.price) + Number(product.price);
-  }else{
-    acc.push({ ...product, count: 1 });
-  }
-    return acc;
-  }, [] as Order[]);
+  const formatOrders = (array: Product[]) => {
+    const formattedOrders = array.reduce((acc, product) => {
+      const existingProduct = acc.find((obj) => obj.id === product.id);
+      if (existingProduct) {
+        existingProduct.count = existingProduct.count + 1;
+        existingProduct.price = Number(product.price) * existingProduct.count;
+      } else {
+        const newProduct = { ...product, count: 1 };
 
+        const modifiedProduct = formatOrder.find(
+          (order) => order.id === newProduct.id
+        );
+        if (modifiedProduct) {
+          newProduct.price = modifiedProduct.price;
+          newProduct.initialPrice = modifiedProduct.initialPrice;
+        }
 
-  const totalPrice = formatOrders.reduce((acc, curr) => {
-    return acc + curr.price * curr.count;
+        acc.push(newProduct);
+      }
+      return acc;
+    }, [] as Product[]);
+    setFormatOrder(formattedOrders);
+    return formattedOrders;
+  };
+
+  const totalPrice = formatOrder.reduce((acc, curr) => {
+    return acc + Number(curr.price);
   }, 0);
+
+  const combineOrders = (
+    formatOrders: Product[],
+    totalPrice: number,
+    hostess: number
+  ) => {
+    return formatOrders.map((order) => {
+      return {
+        ...order,
+        hostess: hostess,
+        total_price: totalPrice,
+      };
+    });
+  };
+
+  const createHeader = async (headerData: { mozo_id: number | undefined }) => {
+    try {
+      const response = await api.post("/headers/create", headerData);
+      if (response.status !== 200) {
+        toast({
+          description: "Hubo un error al guardar el pedido",
+          variant: "destructive",
+        });
+      }
+      return response;
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  const saveOrder = async () => {
+    setIsPending(true);
+
+    if (value <= 1) {
+      toast({
+        description: "Debe seleccionar una anfitriona",
+        variant: "warning",
+      });
+      setIsPending(false);
+      return;
+    }
+
+    try {
+      const header = {
+        mozo_id: user?.id,
+      };
+
+      const data = await createHeader(header);
+
+      const orderWithHosstes = orders.map((order) => {
+        return {
+          ...order,
+          hostess_id: value,
+        };
+      });
+
+      const response = await api.post("/orders/create", orderWithHosstes);
+
+      if (response.status === 200 && data?.status === 200) {
+        toast({
+          description: "Pedido guardado correctamente",
+          variant: "success",
+        });
+      } else {
+        toast({
+          description: "Hubo un error al guardar el pedido",
+          variant: "destructive",
+        });
+      }
+
+      setValue(0);
+      setPendingOrders([]);
+      setIsPending(false);
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setIsPending(false);
+    }
+  };
+
+  useEffect(() => {
+    const newFormatOrders = formatOrders(pendingOrders);
+    setFormatOrder(newFormatOrders);
+  }, [pendingOrders]);
 
   useEffect(() => {
     const newFilteredProducts = (data ? data.product : []).filter(
@@ -37,23 +158,74 @@ export default function Orders() {
     setFilteredProducts(newFilteredProducts);
   }, [data, searchValue]);
 
-  console.log(formatOrders)
-  console.log(totalPrice)
+  useEffect(() => {
+    const combinedOrders = combineOrders(formatOrder, totalPrice, value);
+    setOrders(combinedOrders);
+  }, [formatOrder]);
 
   return (
-    <section className="flex flex-col gap-8 w-full">
-      <h3 className="text-3xl">Pedido</h3>
-      <div>
-        <OrderTables pendingOrders={formatOrders} />
+    <section className="flex justify-center items-center flex-col gap-8 w-full relative md:pr-16 lg:pr-2">
+      <div className="fixed space-y-3 md:space-y-5 w-[90%] lg:w-[61%] h-[30rem] md:h-[27rem] top-[4.7rem] p-5 bg-background z-30 shadow-2xl min-w-[300px]">
+        <h3 className="text-3xl font-medium">Generar pedido</h3>
+        <div className="relative">
+          <div className="flex flex-col md:flex-row gap-6 md:gap-8 lg:gap-24">
+            <SearchHostess value={value} setValue={setValue} />
+            <SearchProduct
+              searchValue={searchValue}
+              setSearchValue={setSearchValue}
+            />
+          </div>
+          <OrderTables
+            setFormatOrder={setFormatOrder}
+            formatOrder={formatOrder}
+            pendingOrders={pendingOrders}
+            setPendingOrders={setPendingOrders}
+          />
+          <div className="w-[15rem] md:w-[18rem] lg:w-[19rem] xl:w-[22rem] absolute -right-[0.4rem] sm:right-[2rem] md:right-[3rem] lg:right-[2.5rem] xl:right-[5.6rem] -bottom-[4rem] flex justify-between items-center gap-x-1 text-[0.8rem] lg:text-xl font-semibold">
+            <div>
+              <span>Total a pagar: </span>
+              <span className="p-1 rounded-md bg-foreground/20">
+                S/.{totalPrice}
+              </span>
+            </div>
+            <AlertDialog>
+              <AlertDialogTrigger asChild>
+                <Button disabled={orders.length <= 0 ? true : false}>
+                  {isPending && (
+                    <Loader2
+                      className="mr-2 h-4 w-4 animate-spin"
+                      aria-hidden="true"
+                    />
+                  )}
+                  Guardar
+                </Button>
+              </AlertDialogTrigger>
+              <AlertDialogContent>
+                <AlertDialogHeader>
+                  <AlertDialogTitle>
+                    Estas seguro que deseas guardar la orden ?
+                  </AlertDialogTitle>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                  <AlertDialogCancel>Cancelar</AlertDialogCancel>
+                  <AlertDialogAction onClick={saveOrder}>
+                    Continuar
+                  </AlertDialogAction>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialog>
+          </div>
+        </div>
       </div>
-      <div className="flex gap-4">
+      <div className="flex gap-4 relative top-[30rem] md:top-[28rem]">
         <OrderAction
-          product={data ? data.product : []}
           isLoading={isLoading}
           setPendingOrders={setPendingOrders}
-          pendingOrders={pendindgOrders}
-          searchValue={searchValue}
-          setSearchValue={setSearchValue}
+          pendingOrders={pendingOrders}
+          filteredProducts={filteredProducts}
+          setFilteredProducts={setFilteredProducts}
+          formatOrders={formatOrders}
+          setFormatOrder={setFormatOrder}
         />
       </div>
     </section>

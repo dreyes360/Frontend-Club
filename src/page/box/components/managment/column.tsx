@@ -1,165 +1,182 @@
 import { ColumnDef } from "@tanstack/react-table";
-import { Checkbox } from "@/components/ui/Checkbox";
 import { Button } from "@/components/ui/Button";
 import { ArrowUpDown } from "lucide-react";
-import { Sheet, SheetTrigger } from "@/components/ui/Sheet";
+import { format } from "date-fns";
 import { useState } from "react";
-import BoxDetails from "../BoxDetails";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/Dialog";
+import NoteSaleActions from "../NoteSaleActions";
 
-export const columns: ColumnDef<Box>[] = [
+export const columns: ColumnDef<Header>[] = [
   {
-    id: "select",
-    header: ({ table }) => (
-      <Checkbox
-        className="ml-4"
-        checked={
-          table.getIsAllPageRowsSelected() ||
-          (table.getIsSomePageRowsSelected() && "indeterminate")
-        }
-        onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
-        aria-label="Select all"
-      />
-    ),
-    cell: ({ row }) => (
-      <Checkbox
-        checked={row.getIsSelected()}
-        onCheckedChange={(value) => row.toggleSelected(!!value)}
-        aria-label="Select row"
-      />
-    ),
-    enableSorting: false,
-    enableHiding: false,
-  },
-  {
-    accessorKey: "user_opening",
+    accessorKey: "id",
     header: ({ column }) => {
       return (
         <Button
           variant="ghost"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
-          Aperturador 
-          <ArrowUpDown className="ml-2 h-4 w-4" />
-        </Button>
-      );
-    },
-    cell: ({ row }) => <div>{row.getValue("user_opening")}</div>,
-  },
-  {
-    accessorKey: "user_closing",
-    header: ({ column }) => {
-      return (
-        <Button
-          variant="ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-        >
-          Cerrador
-          <ArrowUpDown className="ml-2 h-4 w-4" />
+          Numero de pedido
+          <ArrowUpDown className="ml-1 h-4 w-4" />
         </Button>
       );
     },
     cell: ({ row }) => {
-      const isNull = row.getValue("user_closing") === null ? "null" : row.getValue("user_closing") as string;
-      return <div>{isNull}</div>
-    }
-  },
-  {
-    accessorKey: "opening",
-    header: ({ column }) => {
-      return (
-        <Button
-          variant="ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-        >
-          Apertura
-          <ArrowUpDown className="ml-2 h-4 w-4" />
-        </Button>
-      );
+      return <div className="text-center">PD-{row.getValue("id")}</div>;
     },
-    cell: ({ row }) => <div>{row.getValue("opening")}</div>,
   },
   {
-    accessorKey: "closing",
+    accessorKey: "created_at",
     header: ({ column }) => {
       return (
         <Button
           variant="ghost"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
-          Cierre
-          <ArrowUpDown className="ml-2 h-4 w-4" />
+          Fecha de emision
+          <ArrowUpDown className="ml-1 h-4 w-4" />
         </Button>
       );
     },
     cell: ({ row }) => {
-      const isNull = row.getValue("closing") === null ? "null" : row.getValue("closing") as string;
-      return <div>{isNull}</div>
+      const date = format(row.getValue("created_at"), "yyyy-MM-dd");
+      return <div className="text-center">{date}</div>;
     },
   },
   {
-    accessorKey: "initial_balance",
+    accessorKey: "state_doc",
     header: ({ column }) => {
       return (
         <Button
           variant="ghost"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
-            Saldo Inicial
-          <ArrowUpDown className="ml-2 h-4 w-4" />
+          Estado de documento
+          <ArrowUpDown className="ml-1 h-4 w-4" />
         </Button>
       );
     },
-    cell: ({ row }) => <div>{row.getValue("initial_balance")}</div>,
-  },
-  {
-    accessorKey:"final_balance",
-    header: ({ column }) => {
-      return (
-        <Button
-          variant="ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-        >
-            Saldo Final
-          <ArrowUpDown className="ml-2 h-4 w-4" />
-        </Button>
-      );
+    cell: ({ row }) => {
+      const value = row.getValue("state_doc") as number;
+      const isAnulated =
+        value !== null
+          ? Boolean(value) === true
+            ? "En proceso"
+            : "Finalizado"
+          : "Anulado";
+      return <div className="text-center">{isAnulated}</div>;
     },
-    cell: ({ row }) => <div>{row.getValue("final_balance")}</div>,
   },
   {
     accessorKey: "state",
     header: ({ column }) => {
       return (
         <Button
+          className="hidden"
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        ></Button>
+      );
+    },
+    cell: ({ row }) => {
+      return <div className="text-center hidden">{row.getValue("state")}</div>;
+    },
+  },
+  {
+    accessorKey: "mozo",
+    header: ({ column }) => {
+      return (
+        <Button
           variant="ghost"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
-            Estado
-          <ArrowUpDown className="ml-2 h-4 w-4" />
+          Mozo
+          <ArrowUpDown className="ml-1 h-4 w-4" />
         </Button>
       );
     },
     cell: ({ row }) => {
-        const isActive = Boolean(row.getValue("state")) === true ? "bg-green-500" : "bg-red-500" 
-        return <div className={`${isActive} rounded-full w-5 h-5`}></div>
+      return <div>{row.getValue("mozo")}</div>;
+    },
+  },
+  {
+    accessorKey: "hostess",
+    header: ({ column }) => {
+      return (
+        <Button
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          Anfitriona
+          <ArrowUpDown className="ml-1 h-4 w-4" />
+        </Button>
+      );
+    },
+  },
+  {
+    accessorKey: "total_price",
+    header: ({ column }) => {
+      return (
+        <Button
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          Total
+          <ArrowUpDown className="ml-1 h-4 w-4" />
+        </Button>
+      );
+    },
+    cell: ({ row }) => <div>{row.getValue("total_price")}</div>,
+  },
+  {
+    accessorKey: "note_sale",
+    header: ({ column }) => {
+      return (
+        <Button
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          Nota de venta
+          <ArrowUpDown className="ml-1 h-4 w-4" />
+        </Button>
+      );
+    },
+    cell: ({ row }) => {
+      const format =
+        row.getValue("note_sale") == null ||
+        row.getValue("note_sale") == undefined
+          ? "-"
+          : "NV1-" + row.getValue("note_sale");
+      return <div className="text-center">{format}</div>;
     },
   },
   {
     id: "actions",
     enableHiding: false,
     cell: ({ row }) => {
-      const box = row.original;
       // eslint-disable-next-line react-hooks/rules-of-hooks
-      const [open, setIsOpen] = useState(false)
+      const [isOpen, setIsOpen] = useState(false);
+      const header = row.original;
+      const state = !!header.state_doc;
+      const dsds = state !== false && state !== true;
       return (
-        <Sheet open={open} onOpenChange={setIsOpen}>
-          <SheetTrigger asChild>
-            <Button variant="outline">Ver</Button>
-          </SheetTrigger>
-          <BoxDetails box={box} open={open} setIsOpen={setIsOpen}  />
-        </Sheet>
+        <Dialog open={isOpen} onOpenChange={setIsOpen}>
+          <DialogTrigger asChild>
+            <Button>Acciones</Button>
+          </DialogTrigger>
+          <DialogContent className={`max-w-[20rem] ${dsds && "h-[16rem]"}`}>
+            <DialogHeader className="mb-2">
+              <DialogTitle>Acciones</DialogTitle>
+            </DialogHeader>
+            <NoteSaleActions setIsOpen={setIsOpen} header={header} />
+          </DialogContent>
+        </Dialog>
       );
     },
   },
-
 ];

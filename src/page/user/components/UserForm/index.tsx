@@ -24,8 +24,8 @@ import {
   SelectValue,
 } from "@/components/ui/Select";
 import { useQueryClient } from "react-query";
-import { useSelector } from "react-redux";
-import { RootState } from "@/store/store";
+import { useEffect, useState } from "react";
+import { getRoles } from "@/helpers/getRoles";
 
 interface Props {
   setIsPending: (value: boolean) => void;
@@ -33,7 +33,7 @@ interface Props {
 }
 
 export default function UserForm({ setIsPending, setIsOpen }: Props) {
-  const roles = useSelector((state: RootState) => state.roles.role);
+  const [roles, setRoles] = useState<Role[]>([])
   const queryClient = useQueryClient();
   const form = useForm<z.infer<typeof UserSchema>>({
     resolver: zodResolver(UserSchema),
@@ -46,7 +46,7 @@ export default function UserForm({ setIsPending, setIsOpen }: Props) {
       role_id: 0,
     },
   });
-  
+
   const onSubmit = async (values: z.infer<typeof UserSchema>) => {
     setIsPending(true);
     try {
@@ -60,6 +60,7 @@ export default function UserForm({ setIsPending, setIsOpen }: Props) {
       queryClient.invalidateQueries("users");
       setIsOpen(false);
     } catch (error) {
+      console.log(error)
       toast({
         description: "Error al crear cuenta",
         variant: "destructive",
@@ -68,6 +69,19 @@ export default function UserForm({ setIsPending, setIsOpen }: Props) {
       setIsPending(false);
     }
   };
+
+  const fetchRoles = async () => {
+    try {
+      const response = await getRoles();
+      setRoles(response.role);
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  useEffect(()=>{
+    fetchRoles();
+  },[])
 
   return (
     <Form {...form}>

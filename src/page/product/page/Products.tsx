@@ -1,23 +1,23 @@
 import { useQuery } from "react-query";
 import ProductDataTable from "../components/ProductsDataTable";
 import ProductActions from "../components/ProductActions";
-import { useAppDispatch } from "@/store/store";
-import { useEffect } from "react";
-import { getUnits } from "@/store/slices/unit/thunk";
-import { getCategories } from "@/store/slices/category/thunk";
 import { getProducts } from "@/helpers/getProducts";
+import { useEffect } from "react";
+import { useAppDispatch } from "@/store/store";
+import { getCategories } from "@/store/slices/category/thunk";
+import { getUnits } from "@/store/slices/unit/thunk";
 
 export default function Products() {
   const { data, isLoading } = useQuery("products", getProducts);
-  const dispatch = useAppDispatch();
+  const dispatch = useAppDispatch()
 
   useEffect(() => {
-    dispatch(getUnits());
-  }, []);
+    dispatch(getCategories()) 
+  },[])
 
   useEffect(() => {
-    dispatch(getCategories());
-  }, []);
+    dispatch(getUnits())
+  }, [])
 
   return (
     <section className="flex flex-col gap-8 w-full">

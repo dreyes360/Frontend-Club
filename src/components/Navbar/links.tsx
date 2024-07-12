@@ -1,49 +1,139 @@
-import { AlarmClock, Boxes, Combine, Fingerprint, LayoutDashboard, ShoppingBasket, SlidersHorizontal, User } from "lucide-react";
+import {
+  AlarmClock,
+  Boxes,
+  CirclePlus,
+  ClipboardMinus,
+  Combine,
+  Fingerprint,
+  HandCoins,
+  LayoutDashboard,
+  List,
+  ListOrdered,
+  PackageOpen,
+  Settings,
+  ShoppingBasket,
+  SlidersHorizontal,
+  SquareArrowOutUpRight,
+  User,
+  Users,
+  Wine,
+} from "lucide-react";
 
 export const links = [
-    {
-        icon: <LayoutDashboard />,
-        title: "Dashboard",
-        path: "/"
-    },
-    {
+  {
+    icon: <LayoutDashboard />,
+    title: "Dashboard",
+    path: "/",
+  },
+  {
+    icon: <ShoppingBasket />,
+    title: "Productos",
+    path: "/productos",
+  },
+  {
+    icon: <ListOrdered />,
+    title: "Pedidos",
+    childrens: [
+      {
+        icon: <CirclePlus />,
+        title: "Generar pedido",
+        path: "/generar-pedido",
+      },
+      {
+        icon: <List />,
+        title: "Lista de pedidos",
+        path: "/lista-de-pedidos",
+      },
+    ],
+  },
+  {
+    icon: <Users />,
+    title: "Clientes",
+    path: "/clientes",
+  },
+  {
+    icon: <SlidersHorizontal />,
+    title: "Categorias",
+    path: "/categorias",
+  },
+  {
+    icon: <Settings />,
+    title: "Configuracion",
+    childrens: [
+      {
         icon: <User />,
         title: "Usuarios",
         path: "/usuarios",
-    },
-    {
-        icon: <ShoppingBasket />,
-        title: "Productos",
-        path: "/productos",
-    },
-    {
-        icon: <Boxes />,
-        title:"Clientes",
-        path:"/clientes" 
-    },
-    {
-        icon: <SlidersHorizontal />,
-        title: "Categorias",
-        path: "/categorias"
-    },
-    {
+      },
+      {
         icon: <Fingerprint />,
         title: "Roles",
-        path: "/roles"
-    },
-    {
-        icon: <Combine  />,
+        path: "/roles",
+      },
+      {
+        icon: <Combine />,
         title: "Unidad",
-        path: "/unidades"
-    },
-    {
-        icon: <AlarmClock />,
-        title: "Asistencia",
-        path: "/asistencia"
-    },
-    {
-        icon: <Boxes />,
-        title: "Caja",
-        path: "/caja"
-    }
-]
+        path: "/unidades",
+      },
+      {
+        icon: <HandCoins />,
+        title: "Metodos de pago",
+        path: "/metodos-de-pago",
+      },
+    ],
+  },
+  {
+    icon: <AlarmClock />,
+    title: "Asistencia",
+    path: "/asistencia",
+  },
+  {
+    icon: <Boxes />,
+    title: "Cajero",
+    childrens: [
+      {
+        icon: <SquareArrowOutUpRight />,
+        title: "Apertura de caja",
+        path: "/apertura-caja",
+      },
+      {
+        icon: <PackageOpen />,
+        title: "Cajas",
+        path: "/caja",
+      },
+    ],
+  },
+  {
+    icon: <Wine />,
+    title: "Barman",
+    childrens: [
+      {
+        icon: <Fingerprint />,
+        title: "Atencion de pedidos",
+        path: "/atencion-de-pedidos",
+      },
+      {
+        icon: <Combine />,
+        title: "Pedidos atendidos",
+        path: "/pedidos-atendidos",
+      },
+    ],
+  },
+  {
+    icon: <ClipboardMinus />,
+    title: "Reportes",
+    childrens: [
+      {
+        icon: <ClipboardMinus />,
+        title: "Anfitrionas",
+        path:"/reportes-de-anfitrionas"
+
+      },
+      {
+        icon:<ClipboardMinus />,
+        title: "",
+        path:""
+      }
+    ]
+  },
+];

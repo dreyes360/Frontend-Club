@@ -5,7 +5,8 @@ interface User {
   salary: string;
   profit_margin: number;
   role_id: number;
-  is_active: boolean;
+  role:string;
+  is_active: number;
 }
 
 interface Role {
@@ -20,8 +21,11 @@ interface Attendace {
   box_id: number;
   box_date: string;
   present: boolean;
-  user: User; 
-  box_state: boolean;
+  user: string;
+  salary:string;
+  profit_margin:number;
+  box_state: number;
+  role_user: number;
 }
 
 interface Box {

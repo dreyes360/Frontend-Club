@@ -50,6 +50,7 @@ export function LoginForm() {
       }
       navigate("/");
     } catch (error:any) {
+      console.log(error)
       if (error.response && error.response.status === 401) {
         toast({
           title: "Credenciales incorrectas",
@@ -101,9 +102,6 @@ export function LoginForm() {
             <Loader2 className="mr-2 h-4 w-4 animate-spin" aria-hidden="true" />
           )}
           Ingresar
-          <span className="sr-only">
-            Continuar para restablecer la verificación de contraseña
-          </span>
         </Button>
       </form>
     </Form>

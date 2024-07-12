@@ -43,6 +43,10 @@ export default function ProductDataTable({ data, isLoading }: Props) {
   const [columnVisibility, setColumnVisibility] =
     React.useState<VisibilityState>({});
   const [rowSelection, setRowSelection] = React.useState({});
+  const [pagination, setPagination ] = React.useState({
+    pageIndex: 0,
+    pageSize: 6,
+  });
 
   const table = useReactTable({
     data,
@@ -51,6 +55,7 @@ export default function ProductDataTable({ data, isLoading }: Props) {
     onColumnFiltersChange: setColumnFilters,
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
+    onPaginationChange: setPagination,
     getSortedRowModel: getSortedRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
     onColumnVisibilityChange: setColumnVisibility,
@@ -60,6 +65,7 @@ export default function ProductDataTable({ data, isLoading }: Props) {
       columnFilters,
       columnVisibility,
       rowSelection,
+      pagination
     },
   });
   return (
@@ -131,7 +137,7 @@ export default function ProductDataTable({ data, isLoading }: Props) {
                     data-state={row.getIsSelected() && "selected"}
                   >
                     {row.getVisibleCells().map((cell) => (
-                      <TableCell key={cell.id}>
+                      <TableCell key={cell.id} className="px-8">
                         {flexRender(
                           cell.column.columnDef.cell,
                           cell.getContext()
